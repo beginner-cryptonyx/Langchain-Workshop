@@ -47,5 +47,6 @@ Answer:
 """
 
 
-Prompt = PromptTemplate.from_template(template)
+Prompt = PromptTemplate.from_template(Template)
+
 
