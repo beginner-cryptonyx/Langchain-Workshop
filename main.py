@@ -83,3 +83,8 @@ Queries = [
 for query in Queries:
     print(CompanyRAGChain.invoke(query))
     
+# A full‑time employee receives **18 paid annual leave days** each calendar year.
+
+# The policy permits remote work on Wednesdays, provided the employee emails the manager at least one working day beforehand. Friday is also a designated remote‑work day, but the employee is requesting leave, which is not covered by the remote‑work rules. Therefore, the Wednesday request can be approved under the remote‑work policy, while the Friday leave must follow the company’s separate leave‑approval process.
+
+# The provided context does not include any information about a parental leave policy.
