@@ -27,3 +27,25 @@ embedding_model = HuggingFaceEmbeddings(
 from langchain_community.vectorstores import FAISS
 
 VectorDataBase = FAISS.from_documents(chunks, embedding_model)
+
+
+
+# Prompt Template
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+
+Template = """
+Use the following context to answer the question.
+Use three sentences maximum and keep the answer concise.
+
+Context: {context}
+
+Question: {question}
+
+Answer:
+"""
+
+
+Prompt = PromptTemplate.from_template(template)
+
