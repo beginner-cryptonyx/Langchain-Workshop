@@ -58,3 +58,19 @@ Retriever = VectorDataBase.as_retriever(search_kwargs={"k": 3})
 # Function to pass retrieved data into prompt
 def FormatRelaventChunks(docs):
     return "\n\n".join(doc.page_content for doc in docs)
+
+
+
+# Defining the LanguageModel
+from langchain_groq import ChatGroq
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(
+    model = "openai/gpt-oss-120b",
+    api_key = api_key
+)
