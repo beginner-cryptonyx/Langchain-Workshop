@@ -50,3 +50,11 @@ Answer:
 Prompt = PromptTemplate.from_template(Template)
 
 
+
+# Making retriver for the 3 most relavent chunks
+Retriever = VectorDataBase.as_retriever(search_kwargs={"k": 3})
+
+
+# Function to pass retrieved data into prompt
+def FormatRelaventChunks(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
