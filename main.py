@@ -5,29 +5,25 @@ loader = PyPDFLoader("./technova_policy.pdf")
 policy_document = loader.load()
 
 
-
 # Splitting
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-splitter = RecursiveCharacterTextSplitter(chunk_size=50, chunk_overlap=15)
+splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=30)
 chunks = splitter.split_documents(policy_document)
-
 
 
 # Document Embedding
 from langchain_huggingface import HuggingFaceEmbeddings
 
 embedding_model = HuggingFaceEmbeddings(
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
-
 
 
 # Creating Vector Storeage
 from langchain_community.vectorstores import FAISS
 
 VectorDataBase = FAISS.from_documents(chunks, embedding_model)
-
 
 
 # Prompt Template
@@ -50,7 +46,6 @@ Answer:
 Prompt = PromptTemplate.from_template(Template)
 
 
-
 # Making retriver for the 3 most relavent chunks
 Retriever = VectorDataBase.as_retriever(search_kwargs={"k": 3})
 
@@ -58,7 +53,6 @@ Retriever = VectorDataBase.as_retriever(search_kwargs={"k": 3})
 # Function to pass retrieved data into prompt
 def FormatRelaventChunks(docs):
     return "\n\n".join(doc.page_content for doc in docs)
-
 
 
 # Defining the LanguageModel
@@ -70,7 +64,22 @@ load_dotenv()
 
 api_key = os.getenv("GROQ_API_KEY")
 
-llm = ChatGroq(
-    model = "openai/gpt-oss-120b",
-    api_key = api_key
+llm = ChatGroq(model="openai/gpt-oss-120b", api_key=api_key)
+
+
+CompanyRAGChain = (
+    {"context": Retriever | FormatRelaventChunks, "question": RunnablePassthrough()}
+    | Prompt
+    | llm
+    | StrOutputParser()
 )
+
+Queries = [
+    "How many paid annual leave days does a full-time employee receive per year?",
+    "An employee wants to work remotely on Wednesday and take leave on Friday. What do the company policies say about these two requests?",
+    "What is the company's parental leave policy?",
+]
+
+for query in Queries:
+    print(CompanyRAGChain.invoke(query))
+    
